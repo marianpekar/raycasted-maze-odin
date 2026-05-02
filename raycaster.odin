@@ -8,7 +8,6 @@ HALF_FOV :: FOV / 2
 Vec2f :: [2]f32
 
 Ray :: struct {
-    angle: f32,
     dist: f32,
     hit: Vec2f,
     isHitVertical: bool,
@@ -94,18 +93,17 @@ CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
         vHitDist := GetDistance({player.x, player.y}, vHit) if hasVerticalHit else 999_999
 
         if vHitDist < hHitDist {
-            rays[rayIdx].dist = vHitDist
+            rays[rayIdx].dist = vHitDist * math.cos(rayAngle - player.angle)
             rays[rayIdx].hit = vHit
             rays[rayIdx].isHitVertical = true 
             rays[rayIdx].tile = vTile
         } else {
-            rays[rayIdx].dist = hHitDist
+            rays[rayIdx].dist = hHitDist * math.cos(rayAngle - player.angle)
             rays[rayIdx].hit = hHit
             rays[rayIdx].isHitVertical = false 
             rays[rayIdx].tile = hTile
         }
 
-        rays[rayIdx].angle = rayAngle
         rays[rayIdx].isPointingDown = isRayPoitingDown
         rays[rayIdx].isPointingRight = isRayPointingRight
 
