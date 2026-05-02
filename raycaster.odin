@@ -22,7 +22,7 @@ Rays :: [SCREEN_WIDTH]Ray
 TILE_SIZE :: 64
 
 CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
-    rayAngle := player[4] - HALF_FOV
+    rayAngle := player.angle - HALF_FOV
 
     for i in 0..<SCREEN_WIDTH {
         CastRay(player, maze, NormalizeAngle(rayAngle), rays, i)
@@ -46,8 +46,8 @@ CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
         hTile: i32
         intercept: Vec2f
         
-        intercept.y = math.floor(player[1] / TILE_SIZE) * TILE_SIZE + (TILE_SIZE if isRayPoitingDown else 0)
-        intercept.x = player[0] + (intercept.y - player[1]) / math.tan(rayAngle)
+        intercept.y = math.floor(player.y / TILE_SIZE) * TILE_SIZE + (TILE_SIZE if isRayPoitingDown else 0)
+        intercept.x = player.x + (intercept.y - player.y) / math.tan(rayAngle)
 
         step: Vec2f = {TILE_SIZE / math.tan(rayAngle), TILE_SIZE}
         if !isRayPoitingDown do step.y *= -1
@@ -70,8 +70,8 @@ CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
         vHit: Vec2f
         vTile: i32
 
-        intercept.x = math.floor(player[0] / TILE_SIZE) * TILE_SIZE + (TILE_SIZE if isRayPointingRight else 0)
-        intercept.y = player[1] + (intercept.x - player[0]) * math.tan(rayAngle)
+        intercept.x = math.floor(player.x / TILE_SIZE) * TILE_SIZE + (TILE_SIZE if isRayPointingRight else 0)
+        intercept.y = player.y + (intercept.x - player.x) * math.tan(rayAngle)
 
         step.x = TILE_SIZE * (-1 if !isRayPointingRight else 1)
         step.y = TILE_SIZE * math.tan(rayAngle)
@@ -90,8 +90,8 @@ CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
             vNext += step
         }
 
-        hHitDist := GetDistance({player[0], player[1]}, hHit) if hasHorizontalHit else 999_999
-        vHitDist := GetDistance({player[0], player[1]}, vHit) if hasVerticalHit else 999_999
+        hHitDist := GetDistance({player.x, player.y}, hHit) if hasHorizontalHit else 999_999
+        vHitDist := GetDistance({player.x, player.y}, vHit) if hasVerticalHit else 999_999
 
         if vHitDist < hHitDist {
             rays[rayIdx].dist = vHitDist
@@ -115,15 +115,6 @@ CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
             return t.x >= 0 && t.x <= MAZE_WIDTH * TILE_SIZE &&
                    t.y >= 0 && t.y <= MAZE_HEIGHT * TILE_SIZE
         }
-        
-        HasWallAt :: proc(maze: ^Maze, p: Vec2f) -> bool {
-            if p.x < 0 || p.x > MAZE_WIDTH * TILE_SIZE || p.y < 0 || p.y > MAZE_HEIGHT * TILE_SIZE {
-                return true
-            }
-
-            tile: Vec2i = { i32(p.x / TILE_SIZE), i32(p.y / TILE_SIZE)}
-            return !IsOpen(maze, tile)
-        }
 
         GetTile :: proc(maze: ^Maze, p: Vec2f) -> i32 {
             tile: Vec2i = { i32(p.x / TILE_SIZE), i32(p.y / TILE_SIZE)}
@@ -134,4 +125,13 @@ CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
             return math.sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y))
         }
     }
+}
+
+HasWallAt :: proc(maze: ^Maze, p: Vec2f) -> bool {
+    if p.x < 0 || p.x > MAZE_WIDTH * TILE_SIZE || p.y < 0 || p.y > MAZE_HEIGHT * TILE_SIZE {
+        return true
+    }
+
+    tile: Vec2i = { i32(p.x / TILE_SIZE), i32(p.y / TILE_SIZE)}
+    return !IsOpen(maze, tile)
 }

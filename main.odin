@@ -5,8 +5,6 @@ import rl "vendor:raylib"
 SCREEN_WIDTH :: 1024
 SCREEN_HEIGHT :: 768
 
-Player :: [5]f32 // x, y, width, height, angle
-
 main :: proc() {
     rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Renderer")
 
@@ -19,15 +17,17 @@ main :: proc() {
     maze := GenerateMazeRecursive({5,5})
 
     player: Player
-    player[0] = 5 * TILE_SIZE + TILE_SIZE / 2
-    player[1] = 5 * TILE_SIZE + TILE_SIZE / 2
+    player.x = 5 * TILE_SIZE + TILE_SIZE / 2
+    player.y = 5 * TILE_SIZE + TILE_SIZE / 2
 
     rays: Rays
 
     for !rl.WindowShouldClose() {
+        HandleInputs(&player, &maze, rl.GetFrameTime())
+        CastRays(player, &maze, &rays)
+
         rl.BeginDrawing()
 
-        CastRays(player, &maze, &rays)
         Render(player, rays, &renderImage)
 
         rl.UpdateTexture(renderTexture, renderImage.data)

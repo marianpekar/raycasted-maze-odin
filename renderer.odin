@@ -9,7 +9,7 @@ DistToProjPlane := (HALF_SCREEN_WIDTH) / math.tan(f32(HALF_FOV))
 
 Render :: proc(player: Player, rays: Rays, image: ^rl.Image) {
     for i in 0..<SCREEN_WIDTH {
-        perpDist := rays[i].dist * math.cos(rays[i].angle - player[4])
+        perpDist := rays[i].dist * math.cos(rays[i].angle - player.angle)
         projWallHeight := TILE_SIZE / perpDist * DistToProjPlane
         projWallHalfHeight := projWallHeight * 0.5
 
