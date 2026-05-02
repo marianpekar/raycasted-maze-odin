@@ -6,29 +6,20 @@ FOV :: 60 * math.PI / 180
 HALF_FOV :: FOV / 2
 
 Vec2f :: [2]f32
-BitField :: i32
 
 Ray :: struct {
     angle: f32,
     dist: f32,
     hit: Vec2f,
-    rayInfo: BitField
+    isHitVertical: bool,
+    isPointingDown: bool,
+    isPointingRight: bool,
+    tile: i32
 }
 
 Rays :: [SCREEN_WIDTH]Ray
 
 TILE_SIZE :: 64
-
-IsHitVertical      :: proc(rayInfo: BitField) -> bool { return rayInfo & 1 == 1 }
-IsRayPointingDown  :: proc(rayInfo: BitField) -> bool { return rayInfo & 2 == 2 }
-IsRayPointingRight :: proc(rayInfo: BitField) -> bool { return rayInfo & 4 == 4 }
-
-SetHitVertical      :: proc(rayInfo: ^BitField, value: bool) { if value do rayInfo^ |= 1; else do rayInfo^ &~= 1 }
-SetRayPointingDown  :: proc(rayInfo: ^BitField, value: bool) { if value do rayInfo^ |= 2; else do rayInfo^ &~= 2 }
-SetRayPointingRight :: proc(rayInfo: ^BitField, value: bool) { if value do rayInfo^ |= 4; else do rayInfo^ &~= 4 }
-
-GetHitTile :: proc(rayInfo: i32) -> i32 { return rayInfo >> 5 }
-SetHitTile :: proc(rayInfo: ^i32, content: i32) { rayInfo^ = (rayInfo^ & 0x1F) | (content << 5) }
 
 CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
     rayAngle := player[4] - HALF_FOV
@@ -105,18 +96,18 @@ CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
         if vHitDist < hHitDist {
             rays[rayIdx].dist = vHitDist
             rays[rayIdx].hit = vHit
-            SetHitVertical(&rays[rayIdx].rayInfo, true)
-            SetHitTile(&rays[rayIdx].rayInfo, vTile)
+            rays[rayIdx].isHitVertical = true 
+            rays[rayIdx].tile = vTile
         } else {
             rays[rayIdx].dist = hHitDist
             rays[rayIdx].hit = hHit
-            SetHitVertical(&rays[rayIdx].rayInfo, false)
-            SetHitTile(&rays[rayIdx].rayInfo, hTile)
+            rays[rayIdx].isHitVertical = false 
+            rays[rayIdx].tile = hTile
         }
 
         rays[rayIdx].angle = rayAngle
-        SetRayPointingDown(&rays[rayIdx].rayInfo, isRayPoitingDown)
-        SetRayPointingRight(&rays[rayIdx].rayInfo, isRayPointingRight)
+        rays[rayIdx].isPointingDown = isRayPoitingDown
+        rays[rayIdx].isPointingRight = isRayPointingRight
 
         return
         
