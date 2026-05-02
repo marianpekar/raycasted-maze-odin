@@ -3,19 +3,19 @@ package main
 import "core:fmt"
 import "core:math/rand"
 
-Vec2 :: [2]i32
+Vec2i :: [2]i32
 
 MAZE_WIDTH :: 65
 MAZE_HEIGHT :: 65
 
 Maze :: [MAZE_WIDTH * MAZE_HEIGHT]i32
 
-GenerateMazeStack :: proc(start: Vec2) -> Maze {
-    Directions :: [4]Vec2
+GenerateMazeStack :: proc(start: Vec2i) -> Maze {
+    Directions :: [4]Vec2i
     AllDirections :: [24]Directions
 
     maze: Maze = 1
-    stack: Stack(Vec2)
+    stack: Stack(Vec2i)
     dirs := MakeAllDirections()
 
     Open(&maze, start)
@@ -28,7 +28,7 @@ GenerateMazeStack :: proc(start: Vec2) -> Maze {
 
         for i in 0..<4 {
             d := currentDirs[i]
-            n: Vec2 = {c.x + d.x * 2, c.y + d.y * 2}
+            n: Vec2i = {c.x + d.x * 2, c.y + d.y * 2}
 
             if !IsValid(n) do continue
 
@@ -59,12 +59,12 @@ GenerateMazeStack :: proc(start: Vec2) -> Maze {
     }
 }
 
-GenerateMazeRecursive :: proc(start: Vec2) -> Maze {
+GenerateMazeRecursive :: proc(start: Vec2i) -> Maze {
     maze: Maze = 1
     Step(&maze, start)
     return maze
 
-    Step :: proc(maze: ^Maze, p: Vec2) {
+    Step :: proc(maze: ^Maze, p: Vec2i) {
         dirs: [4]i32
         for i in 0..<4 {
             dirs[i] = rand.int31_max(4)
@@ -105,15 +105,19 @@ GenerateMazeRecursive :: proc(start: Vec2) -> Maze {
     }
 }
 
-Open :: proc(maze: ^Maze, p: Vec2) {
+Open :: proc(maze: ^Maze, p: Vec2i) {
     maze[p.x + p.y * MAZE_WIDTH] = 0
 }
 
-IsOpen :: proc(maze: ^Maze, p: Vec2) -> bool {
+IsOpen :: proc(maze: ^Maze, p: Vec2i) -> bool {
     return maze[p.x + p.y * MAZE_WIDTH] == 0
 }
 
-IsValid :: proc(p: Vec2) -> bool {
+GetItem :: proc(maze: ^Maze, p: Vec2i) -> i32 {
+    return maze[p.x + p.y * MAZE_WIDTH]
+}
+
+IsValid :: proc(p: Vec2i) -> bool {
     return p.x > 0 && p.x < MAZE_WIDTH - 1 &&
            p.y > 0 && p.y < MAZE_HEIGHT - 1
 }
