@@ -10,7 +10,7 @@ Player :: [5]f32 // x, y, width, height, angle
 main :: proc() {
     rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Renderer")
 
-    renderImage := rl.GenImageColor(SCREEN_WIDTH, SCREEN_HEIGHT, rl.LIGHTGRAY)
+    renderImage := rl.GenImageColor(SCREEN_WIDTH, SCREEN_HEIGHT, rl.BLACK)
     defer rl.UnloadImage(renderImage)
 
     renderTexture := rl.LoadTextureFromImage(renderImage)
@@ -19,8 +19,8 @@ main :: proc() {
     maze := GenerateMazeRecursive({5,5})
 
     player: Player
-    player[0] = 5
-    player[1] = 5
+    player[0] = 5 * TILE_SIZE + TILE_SIZE / 2
+    player[1] = 5 * TILE_SIZE + TILE_SIZE / 2
 
     rays: Rays
 
@@ -28,6 +28,7 @@ main :: proc() {
         rl.BeginDrawing()
 
         CastRays(player, &maze, &rays)
+        Render(player, rays, &renderImage)
 
         rl.UpdateTexture(renderTexture, renderImage.data)
         rl.DrawTexture(renderTexture, 0, 0, rl.WHITE)
