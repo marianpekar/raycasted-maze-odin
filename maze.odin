@@ -1,5 +1,6 @@
 package main
 
+import "core:c"
 import "core:fmt"
 import "core:math/rand"
 
@@ -9,6 +10,20 @@ MAZE_WIDTH :: 65
 MAZE_HEIGHT :: 65
 
 Maze :: [MAZE_WIDTH * MAZE_HEIGHT]i32
+
+MazeType :: enum {
+   Stack,
+   Recursive
+}
+
+GenerateMaze :: proc(start: Vec2i, type: MazeType) -> Maze {
+    switch type {
+        case .Stack: return GenerateMazeStack(start)
+        case .Recursive: return GenerateMazeRecursive(start)
+    }
+
+    return 0
+}
 
 GenerateMazeStack :: proc(start: Vec2i) -> Maze {
     Directions :: [4]Vec2i

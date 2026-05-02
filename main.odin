@@ -14,7 +14,7 @@ main :: proc() {
     renderTexture := rl.LoadTextureFromImage(renderImage)
     defer rl.UnloadTexture(renderTexture)
 
-    maze := GenerateMazeRecursive({5,5})
+    maze := GenerateMaze({5,5}, .Recursive)
 
     player: Player
     player.x = 5 * TILE_SIZE + TILE_SIZE / 2
