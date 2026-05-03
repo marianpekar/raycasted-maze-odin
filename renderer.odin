@@ -35,3 +35,23 @@ Render :: proc(player: Player, rays: Rays, tiles: Tiles, image: ^rl.Image) {
         for j in wallBottomPx..<SCREEN_HEIGHT do rl.ImageDrawPixel(image, i32(i), i32(j), rl.GRAY)
     }
 }
+
+RenderMap :: proc(maze: Maze, colors: MapColors, image: ^rl.Image, size: f32 = 0.0625) {
+    for y in 0..<MAZE_HEIGHT {
+        for x in 0..<MAZE_WIDTH {
+            tile := maze[x + y * MAZE_WIDTH]
+            color := colors[NUM_TILES] if tile == 0 else colors[tile-1]
+
+            px := i32(f32(x * TILE_SIZE) * size)
+            py := i32(f32(y * TILE_SIZE) * size)
+            size := i32(f32(TILE_SIZE) * size)
+            for dy in 0..<size {
+                for dx in 0..<size {
+                    current := rl.GetImageColor(image^, px + dx, py + dy)
+                    color := rl.ColorAlphaBlend(current, color, rl.WHITE)
+                    rl.ImageDrawPixel(image, px + dx, py + dy, color)
+                }
+            }
+        }
+    }
+}

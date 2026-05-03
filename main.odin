@@ -16,6 +16,8 @@ main :: proc() {
 
     maze := GenerateMaze({5,5}, .Recursive)
 
+    PrintMaze(&maze, "Recursive")
+
     player: Player
     player.x = 5 * TILE_SIZE + TILE_SIZE / 2
     player.y = 5 * TILE_SIZE + TILE_SIZE / 2
@@ -23,6 +25,7 @@ main :: proc() {
     rays: Rays
 
     tiles := LoadTiles("tiles")
+    mapColors := MakeMapColors(tiles)
 
     for !rl.WindowShouldClose() {
         HandleInputs(&player, &maze, rl.GetFrameTime())
@@ -31,10 +34,11 @@ main :: proc() {
         rl.BeginDrawing()
 
         Render(player, rays, tiles, &renderImage)
+        RenderMap(maze, mapColors, &renderImage)
 
         rl.UpdateTexture(renderTexture, renderImage.data)
         rl.DrawTexture(renderTexture, 0, 0, rl.WHITE)
-	    rl.DrawFPS(10, 10)
+	    rl.DrawFPS(SCREEN_WIDTH - 100, 10)
         
         rl.EndDrawing()
     }

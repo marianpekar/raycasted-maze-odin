@@ -24,3 +24,26 @@ LoadTiles :: proc(dir: string) -> Tiles {
 
     return tiles
 }
+
+MapColors :: [NUM_TILES + 1]rl.Color
+
+MakeMapColors :: proc(tiles: Tiles) -> MapColors {
+    colors: [NUM_TILES + 1]rl.Color
+    fade := f32(0.66)
+    n := u32(TILE_SIZE * TILE_SIZE)
+    for tile, i in tiles {
+        r, g, b, a: u32
+        for j in 0..<TILE_SIZE * TILE_SIZE {
+            c := tile[j]
+            r += u32(c.r)
+            g += u32(c.g)
+            b += u32(c.b)
+        }
+        color := rl.Color{u8(r/n), u8(g/n), u8(b/n), 255}
+        colors[i] = rl.Fade(color, fade)
+    }
+
+    colors[NUM_TILES] = rl.Fade(rl.BLACK, fade)
+
+    return colors
+}
