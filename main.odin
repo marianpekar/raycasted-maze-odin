@@ -17,6 +17,7 @@ main :: proc() {
     player: Player
     maze: Maze
     player.showMap = true
+    player.mazeType = .Recursive
     
     Restart(&maze, &player)
 
@@ -49,7 +50,7 @@ main :: proc() {
 
 Restart :: proc(maze: ^Maze, player: ^Player) {
     start := Vec2i{MAZE_WIDTH / 2 + 1, MAZE_HEIGHT / 2 + 1}
-    maze^ = GenerateMaze(start, .Recursive)
+    maze^ = GenerateMaze(start, player.mazeType)
 
     player.x = f32(start.x) * TILE_SIZE + TILE_SIZE / 2
     player.y = f32(start.y) * TILE_SIZE + TILE_SIZE / 2

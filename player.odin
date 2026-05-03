@@ -7,7 +7,8 @@ Player :: struct {
     x, y, 
     angle: f32,
     showMap: bool,
-    restart: bool
+    restart: bool,
+    mazeType: MazeType
 }
 
 HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
@@ -34,5 +35,10 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
 
     if rl.IsKeyPressed(rl.KeyboardKey.M) do player.showMap = !player.showMap
     if rl.IsKeyPressed(rl.KeyboardKey.R) do player.restart = true
+
+    if rl.IsKeyPressed(rl.KeyboardKey.T) {
+        player.mazeType = .Recursive if player.mazeType == .Stack else .Stack
+        player.restart = true
+    }
 }
 
