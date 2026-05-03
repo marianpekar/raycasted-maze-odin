@@ -24,10 +24,16 @@ GenerateMaze :: proc(start: Vec2i, type: MazeType) -> Maze {
         case .Recursive: maze = GenerateMazeRecursive(start)
     }
 
+    PaintWalls(&maze)
+
+    return maze
+}
+
+PaintWalls :: proc(maze: ^Maze) {
     perms := MakePermutations()
     for y in 0..<MAZE_HEIGHT {
         for x in 0..<MAZE_WIDTH {
-            if IsOpen(&maze, {i32(x), i32(y)}) {
+            if IsOpen(maze, {i32(x), i32(y)}) {
                 continue
             }
 
@@ -47,8 +53,6 @@ GenerateMaze :: proc(start: Vec2i, type: MazeType) -> Maze {
         )
         return i32(s)
     }
-
-    return maze
 }
 
 GenerateMazeStack :: proc(start: Vec2i) -> Maze {

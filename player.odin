@@ -40,5 +40,7 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
         player.mazeType = .Recursive if player.mazeType == .Stack else .Stack
         player.restart = true
     }
+
+    if rl.IsKeyPressed(rl.KeyboardKey.P) do PaintWalls(maze)
 }
 
