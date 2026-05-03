@@ -14,15 +14,11 @@ main :: proc() {
     renderTexture := rl.LoadTextureFromImage(renderImage)
     defer rl.UnloadTexture(renderTexture)
 
-    start := Vec2i{MAZE_WIDTH / 2 + 1, MAZE_HEIGHT / 2 + 1}
-    maze := GenerateMaze(start, .Recursive)
-
-    PrintMaze(&maze, "Recursive")
-
     player: Player
-    player.x = f32(start.x) * TILE_SIZE + TILE_SIZE / 2
-    player.y = f32(start.y) * TILE_SIZE + TILE_SIZE / 2
+    maze: Maze
     player.showMap = true
+    
+    Restart(&maze, &player)
 
     rays: Rays
 
@@ -31,6 +27,9 @@ main :: proc() {
 
     for !rl.WindowShouldClose() {
         HandleInputs(&player, &maze, rl.GetFrameTime())
+
+        if player.restart do Restart(&maze, &player)
+
         CastRays(player, &maze, &rays)
 
         rl.BeginDrawing()
@@ -46,5 +45,14 @@ main :: proc() {
         
         rl.EndDrawing()
     }
+}
+
+Restart :: proc(maze: ^Maze, player: ^Player) {
+    start := Vec2i{MAZE_WIDTH / 2 + 1, MAZE_HEIGHT / 2 + 1}
+    maze^ = GenerateMaze(start, .Recursive)
+
+    player.x = f32(start.x) * TILE_SIZE + TILE_SIZE / 2
+    player.y = f32(start.y) * TILE_SIZE + TILE_SIZE / 2
+    player.restart = false
 }
 

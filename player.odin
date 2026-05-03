@@ -6,7 +6,8 @@ import rl "vendor:raylib"
 Player :: struct { 
     x, y, 
     angle: f32,
-    showMap: bool
+    showMap: bool,
+    restart: bool
 }
 
 HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
@@ -32,5 +33,6 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
     }
 
     if rl.IsKeyPressed(rl.KeyboardKey.M) do player.showMap = !player.showMap
+    if rl.IsKeyPressed(rl.KeyboardKey.R) do player.restart = true
 }
 
