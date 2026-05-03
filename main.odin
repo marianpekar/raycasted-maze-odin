@@ -14,7 +14,7 @@ main :: proc() {
     renderTexture := rl.LoadTextureFromImage(renderImage)
     defer rl.UnloadTexture(renderTexture)
 
-    start := Vec2i{MAZE_WIDTH/2, MAZE_HEIGHT/2}
+    start := Vec2i{MAZE_WIDTH / 2 + 1, MAZE_HEIGHT / 2 + 1}
     maze := GenerateMaze(start, .Recursive)
 
     PrintMaze(&maze, "Recursive")
