@@ -22,6 +22,7 @@ main :: proc() {
     player: Player
     player.x = f32(start.x) * TILE_SIZE + TILE_SIZE / 2
     player.y = f32(start.y) * TILE_SIZE + TILE_SIZE / 2
+    player.showMap = true
 
     rays: Rays
 
@@ -35,7 +36,9 @@ main :: proc() {
         rl.BeginDrawing()
 
         Render(player, rays, tiles, &renderImage)
-        RenderMap(maze, player, rays, mapColors, &renderImage)
+        if player.showMap {
+            RenderMap(maze, player, rays, mapColors, &renderImage)
+        }
 
         rl.UpdateTexture(renderTexture, renderImage.data)
         rl.DrawTexture(renderTexture, 0, 0, rl.WHITE)

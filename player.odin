@@ -3,7 +3,11 @@ package main
 import "core:math"
 import rl "vendor:raylib"
 
-Player :: struct { x, y, angle: f32 }
+Player :: struct { 
+    x, y, 
+    angle: f32,
+    showMap: bool
+}
 
 HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
     walk := f32(0)
@@ -26,5 +30,7 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
         player.x = next.x
         player.y = next.y
     }
+
+    if rl.IsKeyPressed(rl.KeyboardKey.M) do player.showMap = !player.showMap
 }
 
