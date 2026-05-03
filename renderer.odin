@@ -19,7 +19,7 @@ Render :: proc(player: Player, rays: Rays, tiles: Tiles, image: ^rl.Image) {
         wallBottomPx :=  HALF_SCREEN_HEIGHT + wallHalfHeight
         if wallBottomPx > SCREEN_HEIGHT do wallBottomPx = SCREEN_HEIGHT
 
-        for j in 0..=wallTopPx do rl.ImageDrawPixel(image, i32(i), i32(j), rl.GRAY)
+        for j in 0..=wallTopPx do rl.ImageDrawPixel(image, i32(i), i32(j), rl.DARKGRAY)
 
         tileOffset: Vec2f
         tileOffset.x = ray.hit.y if ray.isHitVertical else ray.hit.x
