@@ -42,7 +42,7 @@ GenerateMaze :: proc(start: Vec2i, type: MazeType) -> Maze {
             v = {p.x * scale, p.y * scale},
             octaves = 8,
             persistence = 28,
-            low = 0,
+            low = 1,
             high = NUM_TILES
         )
         return i32(s)
