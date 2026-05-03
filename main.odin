@@ -14,13 +14,14 @@ main :: proc() {
     renderTexture := rl.LoadTextureFromImage(renderImage)
     defer rl.UnloadTexture(renderTexture)
 
-    maze := GenerateMaze({5,5}, .Recursive)
+    start := Vec2i{MAZE_WIDTH/2, MAZE_HEIGHT/2}
+    maze := GenerateMaze(start, .Recursive)
 
     PrintMaze(&maze, "Recursive")
 
     player: Player
-    player.x = 5 * TILE_SIZE + TILE_SIZE / 2
-    player.y = 5 * TILE_SIZE + TILE_SIZE / 2
+    player.x = f32(start.x) * TILE_SIZE + TILE_SIZE / 2
+    player.y = f32(start.y) * TILE_SIZE + TILE_SIZE / 2
 
     rays: Rays
 
