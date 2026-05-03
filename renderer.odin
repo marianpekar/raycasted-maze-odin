@@ -55,8 +55,15 @@ RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, ima
         }
     }
 
-    psx := i32(f32(player.x) * size)
-    psy := i32(f32(player.y) * size)
+    psx := i32(player.x * size)
+    psy := i32(player.y * size)
+
+    for i in 0..<SCREEN_WIDTH {
+        rex := i32(rays[i].hit.x * size)
+        rey := i32(rays[i].hit.y * size)
+        rl.ImageDrawLine(image, psx, psy, rex, rey, rl.RED)
+    }
+
     pex := i32(f32(player.x + math.cos(player.angle) * TILE_SIZE) * size)
     pey := i32(f32(player.y + math.sin(player.angle) * TILE_SIZE) * size)
     rl.ImageDrawLine(image, psx, psy, pex, pey, rl.WHITE)
