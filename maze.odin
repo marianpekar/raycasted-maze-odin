@@ -17,12 +17,38 @@ MazeType :: enum {
 }
 
 GenerateMaze :: proc(start: Vec2i, type: MazeType) -> Maze {
+    maze: Maze
+
     switch type {
-        case .Stack: return GenerateMazeStack(start)
-        case .Recursive: return GenerateMazeRecursive(start)
+        case .Stack: maze = GenerateMazeStack(start)
+        case .Recursive: maze = GenerateMazeRecursive(start)
     }
 
-    return 0
+    perms := MakePermutations()
+    for y in 0..<MAZE_HEIGHT {
+        for x in 0..<MAZE_WIDTH {
+            if IsOpen(&maze, {i32(x), i32(y)}) {
+                continue
+            }
+
+            maze[x + y * MAZE_WIDTH] = PaintWall(perms, {f32(x), f32(y)})
+        }
+    }
+
+    PaintWall :: proc(perms: Permutations, p: Vec2f) -> i32 {
+        scale: f32 = 0.0001
+        s := SampleFractalBrownianMotion(
+            perms = perms,
+            v = {p.x * scale, p.y * scale},
+            octaves = 8,
+            persistence = 28,
+            low = 0,
+            high = NUM_TILES
+        )
+        return i32(s)
+    }
+
+    return maze
 }
 
 GenerateMazeStack :: proc(start: Vec2i) -> Maze {
@@ -141,7 +167,7 @@ PrintMaze :: proc(maze: ^Maze, title: string) {
     fmt.printf("\n%v:\n", title)
     for i in 0..<len(maze) {
         if maze[i] == 0 do fmt.print(' ')
-        else do fmt.print('#')
+        else do fmt.print(maze[i])
         if (i + 1) % MAZE_WIDTH == 0 do fmt.print('\n')
     }
 }
