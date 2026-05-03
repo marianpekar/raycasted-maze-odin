@@ -18,8 +18,6 @@ Ray :: struct {
 
 Rays :: [SCREEN_WIDTH]Ray
 
-TILE_SIZE :: 64
-
 CastRays :: proc(player: Player, maze: ^Maze, rays: ^Rays) {
     rayAngle := player.angle - HALF_FOV
 

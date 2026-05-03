@@ -22,13 +22,15 @@ main :: proc() {
 
     rays: Rays
 
+    tiles := LoadTiles("tiles")
+
     for !rl.WindowShouldClose() {
         HandleInputs(&player, &maze, rl.GetFrameTime())
         CastRays(player, &maze, &rays)
 
         rl.BeginDrawing()
 
-        Render(player, rays, &renderImage)
+        Render(player, rays, tiles, &renderImage)
 
         rl.UpdateTexture(renderTexture, renderImage.data)
         rl.DrawTexture(renderTexture, 0, 0, rl.WHITE)
