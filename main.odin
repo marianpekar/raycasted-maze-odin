@@ -34,7 +34,7 @@ main :: proc() {
         rl.BeginDrawing()
 
         Render(player, rays, tiles, &renderImage)
-        RenderMap(maze, mapColors, &renderImage)
+        RenderMap(maze, player, rays, mapColors, &renderImage)
 
         rl.UpdateTexture(renderTexture, renderImage.data)
         rl.DrawTexture(renderTexture, 0, 0, rl.WHITE)

@@ -36,7 +36,7 @@ Render :: proc(player: Player, rays: Rays, tiles: Tiles, image: ^rl.Image) {
     }
 }
 
-RenderMap :: proc(maze: Maze, colors: MapColors, image: ^rl.Image, size: f32 = 0.0625) {
+RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, image: ^rl.Image, size: f32 = 0.0625) {
     for y in 0..<MAZE_HEIGHT {
         for x in 0..<MAZE_WIDTH {
             tile := maze[x + y * MAZE_WIDTH]
@@ -54,4 +54,10 @@ RenderMap :: proc(maze: Maze, colors: MapColors, image: ^rl.Image, size: f32 = 0
             }
         }
     }
+
+    psx := i32(f32(player.x) * size)
+    psy := i32(f32(player.y) * size)
+    pex := i32(f32(player.x + math.cos(player.angle) * TILE_SIZE) * size)
+    pey := i32(f32(player.y + math.sin(player.angle) * TILE_SIZE) * size)
+    rl.ImageDrawLine(image, psx, psy, pex, pey, rl.WHITE)
 }
