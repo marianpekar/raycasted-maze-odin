@@ -67,12 +67,12 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, cursor: ^Cursor, deltaTime: f
 
         if rl.GetMouseWheelMove() > 0 {
             cursor.tile += 1
-            if cursor.tile >= NUM_TILES do cursor.tile = 1
+            if cursor.tile > NUM_TILES do cursor.tile = 1
         } 
 
         if rl.GetMouseWheelMove() < 0 {
             cursor.tile -= 1
-            if cursor.tile < 1 do cursor.tile = NUM_TILES - 1
+            if cursor.tile < 1 do cursor.tile = NUM_TILES
         }
     }
 }
