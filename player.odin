@@ -54,6 +54,8 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, cursor: ^Cursor, deltaTime: f
 
     if rl.IsKeyPressed(rl.KeyboardKey.P) do PaintWalls(maze)
 
+    if rl.IsKeyPressed(rl.KeyboardKey.C) do Clear(maze)
+
     if player.showMap {
         mp := rl.GetMousePosition()
         cursor.x = mp.x

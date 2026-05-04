@@ -178,6 +178,14 @@ IsValid :: proc(p: Vec2i) -> bool {
            p.y >= 0 && p.y < MAZE_HEIGHT - 1
 }
 
+Clear :: proc(maze: ^Maze) {
+    for y in 1..<MAZE_HEIGHT - 1 {
+        for x in 1..<MAZE_WIDTH -1 {
+            maze[x + y * MAZE_WIDTH] = 0
+        }
+    }
+}
+
 PrintMaze :: proc(maze: ^Maze, title: string) {
     fmt.printf("\n%v:\n", title)
     for i in 0..<len(maze) {
