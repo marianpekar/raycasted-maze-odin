@@ -151,7 +151,18 @@ GenerateMazeRecursive :: proc(start: Vec2i) -> Maze {
 }
 
 Open :: proc(maze: ^Maze, p: Vec2i) {
+    if p.x <= 0 || p.x >= MAZE_WIDTH - 1 ||
+       p.y <= 0 || p.y >= MAZE_HEIGHT - 1 {
+        return
+    }
+
     maze[p.x + p.y * MAZE_WIDTH] = 0
+}
+
+Close :: proc(maze: ^Maze, p: Vec2i, tile: i32) {
+    if !IsValid(p) do return
+
+    maze[p.x + p.y * MAZE_WIDTH] = tile
 }
 
 IsOpen :: proc(maze: ^Maze, p: Vec2i) -> bool {
@@ -163,8 +174,8 @@ GetItem :: proc(maze: ^Maze, p: Vec2i) -> i32 {
 }
 
 IsValid :: proc(p: Vec2i) -> bool {
-    return p.x > 0 && p.x < MAZE_WIDTH - 1 &&
-           p.y > 0 && p.y < MAZE_HEIGHT - 1
+    return p.x >= 0 && p.x < MAZE_WIDTH - 1 &&
+           p.y >= 0 && p.y < MAZE_HEIGHT - 1
 }
 
 PrintMaze :: proc(maze: ^Maze, title: string) {

@@ -48,5 +48,13 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
     if player.mapSize > 32 do player.mapSize = 32
 
     if rl.IsKeyPressed(rl.KeyboardKey.P) do PaintWalls(maze)
+
+    if player.showMap {
+        mp := rl.GetMousePosition()
+        mapPos := Vec2i{i32(mp.x * player.mapSize) / TILE_SIZE, i32(mp.y * player.mapSize) / TILE_SIZE}
+
+        if rl.IsMouseButtonDown(rl.MouseButton.LEFT) do Close(maze, mapPos, 1)
+        if rl.IsMouseButtonDown(rl.MouseButton.RIGHT) do Open(maze, mapPos)
+    }
 }
 
