@@ -36,16 +36,18 @@ Render :: proc(player: Player, rays: Rays, tiles: Tiles, image: ^rl.Image) {
     }
 }
 
-RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, image: ^rl.Image) {
-    size := f32(1.0) / player.mapSize
+RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, cursor: Cursor, image: ^rl.Image) {
+    scale := f32(1.0) / player.mapSize
+    size := i32(f32(TILE_SIZE) * scale)
+    
     for y in 0..<MAZE_HEIGHT {
         for x in 0..<MAZE_WIDTH {
             tile := maze[x + y * MAZE_WIDTH]
-            color := colors[NUM_TILES] if tile == 0 else colors[tile-1]
+            color := colors[tile]
 
-            px := i32(f32(x * TILE_SIZE) * size)
-            py := i32(f32(y * TILE_SIZE) * size)
-            size := i32(f32(TILE_SIZE) * size)
+            px := i32(f32(x * TILE_SIZE) * scale)
+            py := i32(f32(y * TILE_SIZE) * scale)
+
             for dy in 0..<size {
                 for dx in 0..<size {
                     current := rl.GetImageColor(image^, px + dx, py + dy)
@@ -56,16 +58,20 @@ RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, ima
         }
     }
 
-    psx := i32(player.x * size)
-    psy := i32(player.y * size)
+    psx := i32(player.x * scale)
+    psy := i32(player.y * scale)
 
     for i in 0..<SCREEN_WIDTH {
-        rex := i32(rays[i].hit.x * size)
-        rey := i32(rays[i].hit.y * size)
+        rex := i32(rays[i].hit.x * scale)
+        rey := i32(rays[i].hit.y * scale)
         rl.ImageDrawLine(image, psx, psy, rex, rey, rl.RED)
     }
 
-    pex := i32(f32(player.x + math.cos(player.angle) * TILE_SIZE) * size)
-    pey := i32(f32(player.y + math.sin(player.angle) * TILE_SIZE) * size)
+    pex := i32(f32(player.x + math.cos(player.angle) * TILE_SIZE) * scale)
+    pey := i32(f32(player.y + math.sin(player.angle) * TILE_SIZE) * scale)
     rl.ImageDrawLine(image, psx, psy, pex, pey, rl.WHITE)
+
+    cx := i32(cursor.x) / i32(size) * i32(size)
+    cy := i32(cursor.y) / i32(size) * i32(size)
+    rl.ImageDrawRectangle(image, cx, cy, i32(size), i32(size), colors[cursor.tile])
 }

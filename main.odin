@@ -18,9 +18,12 @@ main :: proc() {
     player.showMap = true
     player.mazeType = .Recursive
     player.mapSize = 16
+
+    cursor: Cursor
+    cursor.tile = 1
     
     maze: Maze
-    
+
     Restart(&maze, &player)
 
     rays: Rays
@@ -28,8 +31,10 @@ main :: proc() {
     tiles := LoadTiles("tiles")
     mapColors := MakeMapColors(tiles)
 
+    rl.HideCursor()
+
     for !rl.WindowShouldClose() {
-        HandleInputs(&player, &maze, rl.GetFrameTime())
+        HandleInputs(&player, &maze, &cursor, rl.GetFrameTime())
 
         if player.restart do Restart(&maze, &player)
 
@@ -39,7 +44,7 @@ main :: proc() {
 
         Render(player, rays, tiles, &renderImage)
         if player.showMap {
-            RenderMap(maze, player, rays, mapColors, &renderImage)
+            RenderMap(maze, player, rays, mapColors, cursor, &renderImage)
         }
 
         rl.UpdateTexture(renderTexture, renderImage.data)

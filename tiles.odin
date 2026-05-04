@@ -30,8 +30,10 @@ MapColors :: [NUM_TILES + 1]rl.Color
 MakeMapColors :: proc(tiles: Tiles) -> MapColors {
     colors: [NUM_TILES + 1]rl.Color
     fade := f32(0.66)
+    colors[0] = rl.Fade(rl.BLACK, fade)
     n := u32(TILE_SIZE * TILE_SIZE)
-    for tile, i in tiles {
+    i := 1
+    for tile in tiles {
         r, g, b, a: u32
         for j in 0..<TILE_SIZE * TILE_SIZE {
             c := tile[j]
@@ -41,9 +43,7 @@ MakeMapColors :: proc(tiles: Tiles) -> MapColors {
         }
         color := rl.Color{u8(r/n), u8(g/n), u8(b/n), 255}
         colors[i] = rl.Fade(color, fade)
+        i += 1
     }
-
-    colors[NUM_TILES] = rl.Fade(rl.BLACK, fade)
-
     return colors
 }
