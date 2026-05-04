@@ -174,8 +174,8 @@ GetItem :: proc(maze: ^Maze, p: Vec2i) -> i32 {
 }
 
 IsValid :: proc(p: Vec2i) -> bool {
-    return p.x >= 0 && p.x < MAZE_WIDTH - 1 &&
-           p.y >= 0 && p.y < MAZE_HEIGHT - 1
+    return p.x >= 0 && p.x < MAZE_WIDTH &&
+           p.y >= 0 && p.y < MAZE_HEIGHT
 }
 
 Clear :: proc(maze: ^Maze) {
