@@ -54,6 +54,7 @@ Restart :: proc(maze: ^Maze, player: ^Player) {
 
     player.x = f32(start.x) * TILE_SIZE + TILE_SIZE / 2
     player.y = f32(start.y) * TILE_SIZE + TILE_SIZE / 2
+    player.angle = 0
     player.restart = false
 }
 
