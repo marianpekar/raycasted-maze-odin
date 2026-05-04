@@ -8,7 +8,8 @@ Player :: struct {
     angle: f32,
     showMap: bool,
     restart: bool,
-    mazeType: MazeType
+    mazeType: MazeType,
+    mapSize: f32
 }
 
 HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
@@ -40,6 +41,11 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, deltaTime: f32) {
         player.mazeType = .Recursive if player.mazeType == .Stack else .Stack
         player.restart = true
     }
+
+    if rl.IsKeyPressed(rl.KeyboardKey.KP_ADD) do player.mapSize /= 2
+    if rl.IsKeyPressed(rl.KeyboardKey.KP_SUBTRACT) do player.mapSize *= 2
+    if player.mapSize < 8 do player.mapSize = 8
+    if player.mapSize > 32 do player.mapSize = 32
 
     if rl.IsKeyPressed(rl.KeyboardKey.P) do PaintWalls(maze)
 }

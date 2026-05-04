@@ -36,7 +36,8 @@ Render :: proc(player: Player, rays: Rays, tiles: Tiles, image: ^rl.Image) {
     }
 }
 
-RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, image: ^rl.Image, size: f32 = 0.0625) {
+RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, image: ^rl.Image) {
+    size := f32(1.0) / player.mapSize
     for y in 0..<MAZE_HEIGHT {
         for x in 0..<MAZE_WIDTH {
             tile := maze[x + y * MAZE_WIDTH]

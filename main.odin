@@ -15,9 +15,11 @@ main :: proc() {
     defer rl.UnloadTexture(renderTexture)
 
     player: Player
-    maze: Maze
     player.showMap = true
     player.mazeType = .Recursive
+    player.mapSize = 16
+    
+    maze: Maze
     
     Restart(&maze, &player)
 
