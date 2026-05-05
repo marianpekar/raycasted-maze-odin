@@ -15,12 +15,15 @@ main :: proc() {
     defer rl.UnloadTexture(renderTexture)
 
     player: Player
-    player.showMap = true
     player.mazeType = .Recursive
-    player.mapSize = 16
 
     cursor: Cursor
     cursor.tile = 1
+
+    map_: Map
+    map_.size = 16
+    map_.isTransparent = true
+    map_.show = true
     
     maze: Maze
 
@@ -34,7 +37,7 @@ main :: proc() {
     rl.HideCursor()
 
     for !rl.WindowShouldClose() {
-        HandleInputs(&player, &maze, &cursor, rl.GetFrameTime())
+        HandleInputs(&player, &maze, &cursor, &map_, rl.GetFrameTime())
 
         if player.restart do Restart(&maze, &player)
 
@@ -43,8 +46,8 @@ main :: proc() {
         rl.BeginDrawing()
 
         Render(player, rays, tiles, &renderImage)
-        if player.showMap {
-            RenderMap(maze, player, rays, mapColors, cursor, &renderImage)
+        if map_.show {
+            RenderMap(maze, player, rays, mapColors, map_, cursor, &renderImage)
         }
 
         rl.UpdateTexture(renderTexture, renderImage.data)

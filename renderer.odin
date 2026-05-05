@@ -36,8 +36,8 @@ Render :: proc(player: Player, rays: Rays, tiles: Tiles, image: ^rl.Image) {
     }
 }
 
-RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, cursor: Cursor, image: ^rl.Image) {
-    scale := f32(1.0) / player.mapSize
+RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, map_: Map, cursor: Cursor, image: ^rl.Image) {
+    scale := f32(1.0) / map_.size
     size := i32(f32(TILE_SIZE) * scale)
     
     for y in 0..<MAZE_HEIGHT {
@@ -48,12 +48,17 @@ RenderMap :: proc(maze: Maze, player: Player, rays: Rays, colors: MapColors, cur
             px := i32(f32(x * TILE_SIZE) * scale)
             py := i32(f32(y * TILE_SIZE) * scale)
 
-            for dy in 0..<size {
-                for dx in 0..<size {
-                    current := rl.GetImageColor(image^, px + dx, py + dy)
-                    color := rl.ColorAlphaBlend(current, color, rl.WHITE)
-                    rl.ImageDrawPixel(image, px + dx, py + dy, color)
+            if map_.isTransparent {
+                for dy in 0..<size {
+                    for dx in 0..<size {
+                        current := rl.GetImageColor(image^, px + dx, py + dy)
+                        color := rl.ColorAlphaBlend(current, color, rl.WHITE)
+                        rl.ImageDrawPixel(image, px + dx, py + dy, color)
+                    }
                 }
+            }
+            else {
+                rl.ImageDrawRectangle(image, px, py, size, size, color)
             }
         }
     }

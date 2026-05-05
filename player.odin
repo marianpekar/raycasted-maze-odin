@@ -6,10 +6,14 @@ import rl "vendor:raylib"
 Player :: struct { 
     x, y, 
     angle: f32,
-    showMap: bool,
     restart: bool,
     mazeType: MazeType,
-    mapSize: f32
+}
+
+Map :: struct {
+    size: f32,
+    show: bool,
+    isTransparent: bool
 }
 
 Cursor :: struct {
@@ -17,7 +21,7 @@ Cursor :: struct {
     tile: i32
 }
 
-HandleInputs :: proc(player: ^Player, maze: ^Maze, cursor: ^Cursor, deltaTime: f32) {
+HandleInputs :: proc(player: ^Player, maze: ^Maze, cursor: ^Cursor, map_: ^Map, deltaTime: f32) {
     walk := f32(0)
     turn := f32(0)
 
@@ -39,7 +43,7 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, cursor: ^Cursor, deltaTime: f
         player.y = next.y
     }
 
-    if rl.IsKeyPressed(rl.KeyboardKey.M) do player.showMap = !player.showMap
+    if rl.IsKeyPressed(rl.KeyboardKey.M) do map_.show = !map_.show
     if rl.IsKeyPressed(rl.KeyboardKey.R) do player.restart = true
 
     if rl.IsKeyPressed(rl.KeyboardKey.KP_1) {
@@ -57,20 +61,22 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, cursor: ^Cursor, deltaTime: f
         player.restart = true
     }
 
-    if rl.IsKeyPressed(rl.KeyboardKey.KP_ADD) do player.mapSize /= 2
-    if rl.IsKeyPressed(rl.KeyboardKey.KP_SUBTRACT) do player.mapSize *= 2
-    if player.mapSize < 8 do player.mapSize = 8
-    if player.mapSize > 32 do player.mapSize = 32
+    if rl.IsKeyPressed(rl.KeyboardKey.KP_ADD) do map_.size /= 2
+    if rl.IsKeyPressed(rl.KeyboardKey.KP_SUBTRACT) do map_.size *= 2
+    if map_.size < 8 do map_.size = 8
+    if map_.size > 32 do map_.size = 32
+
+    if rl.IsKeyPressed(rl.KeyboardKey.T) do map_.isTransparent = !map_.isTransparent
 
     if rl.IsKeyPressed(rl.KeyboardKey.P) do PaintWalls(maze)
 
     if rl.IsKeyPressed(rl.KeyboardKey.C) do Clear(maze)
 
-    if player.showMap {
+    if map_.show {
         mp := rl.GetMousePosition()
         cursor.x = mp.x
         cursor.y = mp.y
-        mapPos := Vec2i{i32(cursor.x * player.mapSize) / TILE_SIZE, i32(cursor.y * player.mapSize) / TILE_SIZE}
+        mapPos := Vec2i{i32(cursor.x * map_.size) / TILE_SIZE, i32(cursor.y * map_.size) / TILE_SIZE}
 
         if rl.IsMouseButtonDown(rl.MouseButton.LEFT) do Close(maze, mapPos, cursor.tile)
         if rl.IsMouseButtonDown(rl.MouseButton.RIGHT) do Open(maze, mapPos)
