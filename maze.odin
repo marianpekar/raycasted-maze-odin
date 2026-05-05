@@ -12,7 +12,8 @@ Maze :: [MAZE_WIDTH * MAZE_HEIGHT]i32
 
 MazeType :: enum {
    Stack,
-   Recursive
+   Recursive,
+   Circular
 }
 
 GenerateMaze :: proc(start: Vec2i, type: MazeType) -> Maze {
@@ -21,6 +22,7 @@ GenerateMaze :: proc(start: Vec2i, type: MazeType) -> Maze {
     switch type {
         case .Stack: maze = GenerateMazeStack(start)
         case .Recursive: maze = GenerateMazeRecursive(start)
+        case .Circular: maze = GenerateMazeCicrular(start)
     }
 
     PaintWalls(&maze)
@@ -149,6 +151,86 @@ GenerateMazeRecursive :: proc(start: Vec2i) -> Maze {
     }
 }
 
+GenerateMazeCicrular :: proc(start: Vec2i) -> Maze {
+    maze: Maze = 1
+    Clear(&maze)
+
+    maxRing := 0
+    for ring in 1..<(MAZE_WIDTH / 2) {
+        offset := ring * 2
+        if offset > MAZE_WIDTH - 1 - offset || offset > MAZE_HEIGHT - 1 - offset do break
+        maxRing = ring
+    }
+
+    for ring in 1..=maxRing {
+        offset := i32(ring * 2)
+        left := offset
+        right := MAZE_WIDTH - 1 - offset
+        top := offset
+        bottom := MAZE_HEIGHT - 1 - offset
+
+        tiles: [256]Vec2i
+        numWalls := 0
+
+        for x := left; x <= right; x += 1 {
+            tiles[numWalls] = {x, top}
+            numWalls += 1
+        }
+
+        for y := top + 1; y <= bottom; y += 1 {
+            tiles[numWalls] = {right, y}
+            numWalls += 1
+        }
+
+        if top != bottom {
+            for x := right - 1; x >= left; x -= 1 {
+                tiles[numWalls] = {x, bottom}
+                numWalls += 1
+            }
+        }
+
+        if left != right {
+            for y := bottom - 1; y >= top + 1; y -= 1 {
+                tiles[numWalls] = {left, y}
+                numWalls += 1
+            }
+        }
+
+        indices: [256]int
+        numValid := 0
+        for i in 0..<numWalls {
+            c := tiles[i]
+            isCorner := (c.x == left && c.y == top)   ||
+                        (c.x == right && c.y == top)  ||
+                        (c.x == right && c.y == bottom) ||
+                        (c.x == left && c.y == bottom)
+            if !isCorner {
+                indices[numValid] = i
+                numValid += 1
+            }
+        }
+
+        if numValid <= 0 do continue
+
+        nHoles := maxRing - ring + 1
+        isHole: [256]bool
+
+        r := rand.int_range(0, numValid)
+        for h in 0..<nHoles {
+            idx := indices[(r + h * numValid / nHoles) % numValid]
+            isHole[idx] = true
+        }
+
+        for i in 0..<numWalls {
+            if !isHole[i] {
+                Close(&maze, tiles[i])
+            }
+        }
+    }
+
+    return maze
+}
+
 Open :: proc(maze: ^Maze, p: Vec2i) {
     if p.x <= 0 || p.x >= MAZE_WIDTH - 1 ||
        p.y <= 0 || p.y >= MAZE_HEIGHT - 1 {
@@ -158,7 +240,7 @@ Open :: proc(maze: ^Maze, p: Vec2i) {
     maze[p.x + p.y * MAZE_WIDTH] = 0
 }
 
-Close :: proc(maze: ^Maze, p: Vec2i, tile: i32) {
+Close :: proc(maze: ^Maze, p: Vec2i, tile: i32 = 1) {
     if !IsValid(p) do return
 
     maze[p.x + p.y * MAZE_WIDTH] = tile

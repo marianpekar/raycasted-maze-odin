@@ -42,8 +42,18 @@ HandleInputs :: proc(player: ^Player, maze: ^Maze, cursor: ^Cursor, deltaTime: f
     if rl.IsKeyPressed(rl.KeyboardKey.M) do player.showMap = !player.showMap
     if rl.IsKeyPressed(rl.KeyboardKey.R) do player.restart = true
 
-    if rl.IsKeyPressed(rl.KeyboardKey.T) {
-        player.mazeType = .Recursive if player.mazeType == .Stack else .Stack
+    if rl.IsKeyPressed(rl.KeyboardKey.KP_1) {
+        player.mazeType = .Recursive
+        player.restart = true
+    }
+
+    if rl.IsKeyPressed(rl.KeyboardKey.KP_2) {
+        player.mazeType = .Stack
+        player.restart = true
+    }
+
+    if rl.IsKeyPressed(rl.KeyboardKey.KP_3) {
+        player.mazeType = .Circular
         player.restart = true
     }
 
