@@ -166,10 +166,14 @@ Close :: proc(maze: ^Maze, p: Vec2i, tile: i32) {
 }
 
 IsOpen :: proc(maze: ^Maze, p: Vec2i) -> bool {
+    if !IsValid(p) do return false
+
     return maze[p.x + p.y * MAZE_WIDTH] == 0
 }
 
 GetItem :: proc(maze: ^Maze, p: Vec2i) -> i32 {
+    if !IsValid(p) do return 0
+
     return maze[p.x + p.y * MAZE_WIDTH]
 }
 
