@@ -29,10 +29,19 @@ Render :: proc(player: Player, rays: Rays, tiles: Tiles, image: ^rl.Image) {
             tileOffset.y = distFromTop * TILE_SIZE / wallHeight
             
             texel := tiles[ray.tile-1][i32(tileOffset.y) * TILE_SIZE + i32(tileOffset.x) % TILE_SIZE]
+
+            if ray.isHitVertical do Darken(&texel, 0.666)
+
             rl.ImageDrawPixel(image, i32(i), i32(j), texel)
         }
 
         for j in wallBottomPx..<SCREEN_HEIGHT do rl.ImageDrawPixel(image, i32(i), i32(j), rl.GRAY)
+    }
+
+    Darken :: proc(c: ^rl.Color, f: f32) {
+        c.r = u8(f32(c.r) * f)
+        c.g = u8(f32(c.g) * f)
+        c.b = u8(f32(c.b) * f)
     }
 }
 
